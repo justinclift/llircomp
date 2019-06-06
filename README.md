@@ -1,6 +1,6 @@
 A simple cli utility to parse two .ll files, and display the differences.
 
-Based on the initial Go code from Step 3 of:
+Based on the initial Go code from Step 2 of:
 
   https://github.com/llir/llvm/issues/86#issuecomment-498357924
 
