@@ -5,11 +5,6 @@ import (
     "log"
 
     "github.com/llir/llvm/asm"
-    "github.com/llir/llvm/ir"
-)
-
-var (
-    diff ir.Module
 )
 
 func main() {
@@ -20,21 +15,29 @@ func main() {
     }
 
     // Parse the ll we're working with currently
-    cur, err := asm.ParseFile("foo.ll")
+    wor, err := asm.ParseFile("foo.ll")
     if err != nil {
         log.Fatalf("%+v", err)
     }
 
-    // TODO: Compare the parsed ll of cur, keeping track of where it differs from tar
-    //       asm/module.go has some decent pieces which *might* be usable, but they're not exported :/
-    if tar.SourceFilename != cur.SourceFilename {
-        diff.SourceFilename = tar.SourceFilename
+    // TODO: Display the differences between the two ll files
+    //   asm/module.go has some decent pieces which *might* be usable, but they're not exported :/
+    // TODO: Once this is working ok(?), reduce the output to only display meaningful differences
+    fmt.Println("Differences to investigate:")
+    if tar.SourceFilename != wor.SourceFilename {
+        fmt.Println("  * Source filename")
+        fmt.Printf("      Target: '%s'\n", tar.SourceFilename)
+        fmt.Printf("        Work: '%s'\n", wor.SourceFilename)
     }
-    if tar.DataLayout != cur.DataLayout {
-        diff.DataLayout = tar.DataLayout
+    if tar.DataLayout != wor.DataLayout {
+        fmt.Println("  * Data layout")
+        fmt.Printf("      Target: '%s'\n", tar.DataLayout)
+        fmt.Printf("        Work: '%s'\n", wor.DataLayout)
     }
-    if tar.TargetTriple != cur.TargetTriple {
-        diff.TargetTriple = tar.TargetTriple
+    if tar.TargetTriple != wor.TargetTriple {
+        fmt.Println("  * Target triple")
+        fmt.Printf("      Target: '%s'\n", tar.TargetTriple)
+        fmt.Printf("        Work: '%s'\n", wor.TargetTriple)
     }
 
     // TODO: This will need to check each attribute, of each function
@@ -115,20 +118,4 @@ func main() {
     //     gen.old.useListOrderBBs = append(gen.old.useListOrderBBs, entity)
     //
     // }
-
-    // Display the differences between the two ll files
-    // TODO: Once this is working ok(?), reduce the output to only display meaningful differences
-    fmt.Println("Differences to investigate:")
-    if diff.SourceFilename != "" {
-        fmt.Printf("  * Source filename: %s\n", diff.SourceFilename)
-    }
-    if diff.DataLayout != "" {
-        fmt.Printf("  * Data layout: %s\n", diff.DataLayout)
-    }
-    if diff.TargetTriple != "" {
-        fmt.Printf("  * Target triple: %s\n", diff.TargetTriple)
-    }
-
-    // TODO: Wonder if it would be possible/useful to "correct" the differences?
-
 }
